@@ -1,0 +1,50 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+int num[1001];
+int ans[1001][1001];
+
+int dp(int i,int j)
+{
+	if(ans[i][j]!=-1) return ans[i][j];
+	if(i+1==j)
+	{
+		if(num[i]>num[j]) ans[i][j]=num[i];
+		else ans[i][j]=num[j];
+		return ans[i][j];
+	}
+	int templ,tempr;
+	templ=0,tempr=0;
+	if(num[i+1]>=num[j])	templ=num[i]+dp(i+2,j);
+	else templ=num[i]+dp(i+1,j-1);
+	if(num[i]>=num[j-1])	tempr=num[j]+dp(i+1,j-1);
+	else tempr=num[j]+dp(i,j-2);
+	if(templ>tempr) ans[i][j]=templ;
+	else ans[i][j]=tempr;
+	return ans[i][j];
+}
+
+int main()
+{
+	int n;
+	int round=1;
+	while(cin>>n&&n!=0)
+	{
+		int total=0;
+		for(int i=0;i<n;i++)
+		{
+			cin>>num[i];
+			total+=num[i];
+			for(int j=0;j<n;j++)
+			{
+				ans[i][j]=-1;
+			}
+		}
+		int scoref=dp(0,n-1);
+		int scorel=total-scoref;
+		int a=abs(scoref-scorel);
+		cout << "In game " << round << ", the greedy strategy might lose by as many as " << a << " points." << endl;
+        round++;
+	} 
+}
